@@ -1,0 +1,5 @@
+/node_modules/
+/database/sqliteInfohash/
+/database/index.db
+/database/infohash.db
+/.idea/
