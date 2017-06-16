@@ -16,7 +16,7 @@ class handler{
     }
 
     openSingleDB(input){
-        var fileName=input||'infohash.db';
+        var fileName=__dirname+'/'+(input||'infohash.db');
         var exists = fs.existsSync(fileName);
         if(!exists) {
             console.log("Creating DB file.");
@@ -43,7 +43,7 @@ class handler{
 
     createInfoHashTable() {
         return new Promise((resolve,reject)=>{
-            this.db.run("CREATE TABLE IF NOT EXISTS info_hash (id INTEGER PRIMARY KEY AUTOINCREMENT,key VARCHAR(255),value INT(255),torrent_download INT(2))"
+            this.db.run("CREATE TABLE IF NOT EXISTS info_hash (id INTEGER PRIMARY KEY AUTOINCREMENT,key VARCHAR(255),create_time VARCHAR(255),value INT(255),torrent_download INT(2))"
                 ,function (err) {
                 if (err) {
                     console.log('fail on delete ' + err);
@@ -56,7 +56,7 @@ class handler{
     }
     createIndexTable() {
         return new Promise((resolve,reject)=>{
-            this.db.run("CREATE TABLE IF NOT EXISTS index_table (id INTEGER PRIMARY KEY AUTOINCREMENT,prefix VARCHAR(255))",function (err) {console.log(err);
+            this.db.run("CREATE TABLE IF NOT EXISTS index_table (id INTEGER PRIMARY KEY AUTOINCREMENT,prefix VARCHAR(255),value INT(255))",function (err) {console.log(err);
                 if (err) {
                     console.log('fail on delete ' + err);
                     reject(err)

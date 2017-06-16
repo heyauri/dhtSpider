@@ -10,7 +10,7 @@ const utils=require('./utils');
 //config
 const config=require('./config');
 //db
-const db=require('./database/sqliteOperate');
+let db=require('./database/database')
 //kTable
 const KTable=require('./kTable');
 
@@ -234,7 +234,6 @@ class DhtSpider{
             nodes: ''
         };
         this.response(r, msg.t, rinfo);
-
     }
 
     onAnnouncePeer(msg,rinfo){

@@ -6,7 +6,7 @@ const config = require('../config').sqliteConfig;
 
 const dbOperator = {};
 
-if (config.sqliteType == 'single') {
+if (config.sqliteType === 'single') {
     dbOperator.handler = new Sqlite3();
     dbOperator.handler.openSingleDB();
     dbOperator.handler.createInfoHashTable();
@@ -31,36 +31,113 @@ dbOperator.saveInfoHash = function (infoHash) {
         case 'multi':
             console.log('create new handler');
             sqlite3.openMultiDB(infoHash.substr(0, config.sqliteMultiPrefixLength));
+            let indexDB=new Sqlite3();
+            indexDB.openSingleDB('index.db');
+            indexDB.createIndexTable().then(()=>{
+                let prefix=infoHash.substr(0,config.sqliteMultiPrefixLength);
+                indexDB.fetchRow({tableName:'index_table',key:'prefix',value:prefix},
+                    function(indexRows){
+                        if (Object.prototype.toString.call(indexRows) === '[object Array]' && indexRows.length === 0) {
+                            let obj = {
+                                tableName: 'index_table',
+                                items: {
+                                    prefix: prefix,
+                                    value:1
+                                }
+                            };
+                            indexDB.addRecord(obj, () => {})
+                        }
+                        else if (Object.prototype.toString.call(indexRows) === '[object Array]'){
+                            let obj = {
+                                tableName: 'index_table',
+                                items: {
+                                    value:indexRows[0].value+1
+                                },
+                                conditions:{
+                                    prefix: prefix,
+                                }
+                            };
+                            indexDB.updateRecord(obj, () => {})
+                        }
+                    }
+                )
+            });
             break;
         default:
             console.log("storage type of database haven't been set");
             return;
     }
-    sqlite3.createInfoHashTable();
-    sqlite3.fetchRow(obj, function (rows) {
-        if (Object.prototype.toString.call(rows) === '[object Array]' && rows.length > 0) {
-            sqlite3.updateRecord({tableName: 'info_hash', id: rows[0]['id'], items: {value: rows[0]['value'] + 1}})
-        }
-        else {
-            sqlite3.addRecord({tableName: 'info_hash', items: {key: infoHash, value: 1, torrent_download: 0}})
-        }
+    sqlite3.createInfoHashTable().then(()=>{
+        sqlite3.fetchRow(obj, function (rows) {
+            if (Object.prototype.toString.call(rows) === '[object Array]' && rows.length > 0) {
+                sqlite3.updateRecord({tableName: 'info_hash', id: rows[0]['id'], items: {value: rows[0]['value'] + 1}})
+            }
+            else {
+                let currentTime=new Date();
+                let currentTimeArray=[];
+                currentTimeArray[0]=[];
+                currentTimeArray[1]=[];
+                currentTimeArray[0].push(currentTime.getFullYear());
+                currentTimeArray[0].push(currentTime.getMonth()+1);
+                currentTimeArray[0].push(currentTime.getDate());
+                currentTimeArray[1].push(currentTime.getHours());
+                currentTimeArray[1].push(currentTime.getMinutes());
+                currentTimeArray[1].push(currentTime.getSeconds());
+                currentTimeArray[0]=currentTimeArray[0].join('-');
+                currentTimeArray[1]=currentTimeArray[1].join(':');
+                let currentTimeStr=currentTimeArray.join(' ');
+                let obj={
+                    tableName: 'info_hash',
+                    items:
+                        {
+                            key: infoHash, value: 1,
+                            torrent_download: 0,
+                            create_time: currentTimeStr,
+                        }
+                };
+                sqlite3.addRecord(obj)
+            }
 
-        if (config.databaseType === 'multi') {
-            sqlite3.closeDB();
-        }
+            if (config.databaseType === 'multi') {
+                sqlite3.closeDB();
+            }
+        });
+    });
+
+};
+
+
+
+
+
+dbOperator.queryInfoHashDB = function () {
+    let singleDB = new Sqlite3();
+    singleDB.openSingleDB('infohash.db');
+    let queryObj = {
+        tableName: 'info_hash'
+    };
+    return new Promise((resolve,reject)=>{
+        singleDB.fetchAllRow(queryObj, function (rows) {
+            if (Object.prototype.toString.call(rows) === '[object Array]') {
+                resolve(rows);
+            }
+            else{
+                reject('fail to query the sqlite3-format info_hash')
+            }
+        })
     });
 };
 
 dbOperator.singleToMulti = function () {
     let singleDB = new Sqlite3();
-    singleDB.openSingleDB('temp.db');
+    singleDB.openSingleDB('infohash.db');
 
     let indexDB = new Sqlite3();
     indexDB.openSingleDB('index.db');
     indexDB.createIndexTable();
 
     let queryObj = {
-        tableName: 'temp'
+        tableName: 'info_hash'
     };
     //singleDB.fetchRow(queryObj, function (rows) {
     singleDB.fetchAllRow(queryObj, function (rows) {
@@ -76,7 +153,7 @@ dbOperator.singleToMulti = function () {
                     value: prefix
                 };
                 indexDB.fetchRow(indexObj, (indexRows) => {
-                    if (Object.prototype.toString.call(indexRows) === '[object Array]' && indexRows.length == 0) {
+                    if (Object.prototype.toString.call(indexRows) === '[object Array]' && indexRows.length === 0) {
                         let obj = {
                             tableName: 'index_table',
                             items: {
