@@ -9,13 +9,12 @@ class KTable{
     constructor(){
         this.nodeList=[];
         setInterval(function(){
-            console.log(this.nodeList.length);
             this.nodesStatusScan();
         }.bind(this),60000);
         setInterval(function(){
-            console.log(this.nodeList.length);
+            console.log('current nodeList length:'+this.nodeList.length);
             //console.log(this.nodeList[Math.floor(Math.random()*this.nodeList.length)]);
-        }.bind(this),1000);
+        }.bind(this),10000);
     }
     getNodeList(){
         return this.nodeList;

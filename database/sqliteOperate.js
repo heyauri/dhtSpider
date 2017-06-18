@@ -71,6 +71,7 @@ dbOperator.saveInfoHash = function (infoHash) {
         sqlite3.fetchRow(obj, function (rows) {
             if (Object.prototype.toString.call(rows) === '[object Array]' && rows.length > 0) {
                 sqlite3.updateRecord({tableName: 'info_hash', id: rows[0]['id'], items: {value: rows[0]['value'] + 1}})
+                return 'add';
             }
             else {
                 let currentTime=new Date();
@@ -95,11 +96,8 @@ dbOperator.saveInfoHash = function (infoHash) {
                             create_time: currentTimeStr,
                         }
                 };
-                sqlite3.addRecord(obj)
-            }
-
-            if (config.databaseType === 'multi') {
-                sqlite3.closeDB();
+                sqlite3.addRecord(obj);
+                return 'add';
             }
         });
     });

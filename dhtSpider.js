@@ -10,9 +10,18 @@ const utils=require('./utils');
 //config
 const config=require('./config');
 //db
-let db=require('./database/database')
+let db=require('./database/database');
 //kTable
 const KTable=require('./kTable');
+
+let requestData={
+    totalSend:0,
+    totalReceive:0,
+    ping:0,
+    findNode:0,
+    getPeers:0,
+    announcePeers:0
+};
 
 class DhtSpider{
     constructor(address,port){
@@ -56,8 +65,13 @@ class DhtSpider{
             this.findNodeList();
         }
 
-
-
+        setInterval(()=>{
+            let requestStr='';
+            for(let key in requestData){
+                requestStr=requestStr+key+':'+requestData[key]+'  '
+            }
+            console.log('total run time:'+process.uptime()+'s','requestData:'+requestStr);
+        },10000);
 
     }
 
@@ -65,10 +79,11 @@ class DhtSpider{
         let nodes=config.bootstrapNodes;
         nodes.forEach((node)=>{
             this.findNode(node)
-        })
+        });
     }
 
     onMessage(message,rinfo){
+        requestData.totalReceive++;
         let msg={};
         let y;
         try{
@@ -181,6 +196,7 @@ class DhtSpider{
     }
 
     request(message,target){
+        requestData.totalSend++;
         let address=target.address;
         let port=target.port;
         let packet=bencode.encode(message);
@@ -204,7 +220,7 @@ class DhtSpider{
         let r={
             id:this.id
         };
-        console.log('ping');
+        requestData.ping++;
         this.response(r,msg.t,rinfo);
     }
 
@@ -213,7 +229,7 @@ class DhtSpider{
             id:this.id,
             nodes:this.nodeList[Math.floor(this.nodeList.length/2)]
         };
-        console.log('findNode');
+        requestData.findNode++;
         this.response(r,msg.t,rinfo);
     }
 
@@ -222,7 +238,8 @@ class DhtSpider{
         let infoHash='';
         if (msg.a && msg.a.info_hash && msg.a.info_hash.length === 20) {
             infoHash = msg.a.info_hash;
-            console.log('get peers',infoHash.toString('hex'));
+            requestData.getPeers++;
+            //console.log('get peers',infoHash.toString('hex'));
             db.saveInfoHash(infoHash.toString('hex'));
         } else {
             return ;
@@ -239,7 +256,8 @@ class DhtSpider{
     onAnnouncePeer(msg,rinfo){
         if (msg.a && msg.a.info_hash && msg.a.info_hash.length === 20) {
             let infoHash=msg.a.info_hash;
-            console.log('announce peer',infoHash.toString('hex'));
+            requestData.announcePeers++;
+            //console.log('announce peer',infoHash.toString('hex'));
             db.saveInfoHash(infoHash.toString('hex'));
         } else {
             return ;
