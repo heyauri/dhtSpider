@@ -1,6 +1,3 @@
-/**
- * Created by Administrator on 2017/6/13.
- */
 
 const net=require('net');
 const events=require('events');

@@ -1,11 +1,12 @@
-/**
- * Created by ruiyeah on 2017/5/27.
- *
+/**configuration of the spider
  * databaseType:
  * 1.sqlite  2.mongoDB
  *
+ *
  */
-module.exports={
+
+
+const config={
     address:"0.0.0.0",
     port:6881,
     databaseType:'sqlite',
@@ -32,3 +33,4 @@ module.exports={
         port: 6881
     }]
 };
+module.exports=config;

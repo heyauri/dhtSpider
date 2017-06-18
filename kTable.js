@@ -1,6 +1,3 @@
-/**
- * Created by Administrator on 2017/6/13.
- */
 
 const config=require('./config');
 

@@ -1,6 +1,3 @@
-/**
- * Created by Administrator on 2017/6/16.
- */
 
 const sqlite=require('./sqliteOperate');
 const mongoDB=require('./mongoOperate');

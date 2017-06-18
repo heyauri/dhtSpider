@@ -1,6 +1,4 @@
-/**
- * Created by Administrator on 2017/6/11.
- */
+
 
 const DhtSpider=require('./dhtSpider');
 const TorrentController=require('./torrentDownload');

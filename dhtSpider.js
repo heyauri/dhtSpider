@@ -1,6 +1,4 @@
-/**
- * Created by Administrator on 2017/5/26.
- */
+
 const dgram=require('dgram');
 const crypto=require('crypto');
 const bencode=require('bencode');

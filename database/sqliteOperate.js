@@ -1,6 +1,4 @@
-/**
- * Created by Administrator on 2017/6/12.
- */
+
 const Sqlite3 = require('./sqlite3');
 const config = require('../config').sqliteConfig;
 
