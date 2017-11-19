@@ -19,7 +19,8 @@ const config={
     mongoConfig:{
         address:'mongodb://127.0.0.1:27017/dht'
     },
-    maxNodeNumber:95000,
+    maxNodeNumber:10000,
+    maxRequestLength:10000,
     intervalTime:60000,
     downloadMaxTime:10000,
     bootstrapNodes:[{

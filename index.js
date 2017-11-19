@@ -1,24 +1,25 @@
 
 
-const DhtSpider=require('./dhtSpider');
-const TorrentController=require('./torrentDownload');
+const DhtSpider=require('./lib/dhtSpider');
+const TorrentController=require('./lib/torrentController');
 const config=require('./config');
-const sqliteOperator=require('./database/sqliteOperate');
-const dbExchange=require('./database/dataExchange');
+const sqliteOperator=require('./lib/database/sqliteOperate');
+const dbExchange=require('./lib/database/dataExchange');
 
-//spider
-let spider=new DhtSpider(config.address,config.port);
+//torrent controllerInit
+let torrentController=new TorrentController();
+//dht spider
+let spider=new DhtSpider(config.address,config.port,torrentController);
+
+
+
 
 //show the use of memory
 /*
-setInterval(()=>{
-    console.log(process.memoryUsage());
-},5000);
-*/
-
-
-//torrent download
-//let torrentController=new TorrentController();
+ setInterval(()=>{
+ console.log(process.memoryUsage());
+ },5000);
+ */
 
 //single sqlite3 database to multi database
 //sqliteOperator.singleToMulti();
