@@ -1,7 +1,7 @@
 
 
-const DhtSpider=require('./lib/dhtSpider');
-const TorrentController=require('./lib/torrentController');
+const DhtSpider=require('./dhtSpider');
+const TorrentController=require('./torrentController');
 const config=require('./config');
 const sqliteOperator=require('./lib/database/sqliteOperate');
 const dbExchange=require('./lib/database/dataExchange');

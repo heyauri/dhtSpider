@@ -3,13 +3,13 @@ const dgram=require('dgram');
 const crypto=require('crypto');
 const bencode=require('bencode');
 //util
-const utils=require('./utils');
+const utils=require('./lib/utils');
 //config
-const config=require('../config');
+const config=require('./config');
 //db
-let db=require('./database/database');
+let db=require('./lib/database/database');
 //kTable
-const KTable=require('./kTable');
+const KTable=require('./lib/kTable');
 
 let requestData={
     totalSend:0,
@@ -96,15 +96,15 @@ class DhtSpider{
         }
 
         if(!msg.t){
-            return console.log("t is empty");
+            return //console.log("t is empty");
         }
 
         if(!y||y.length!==1){
-            return console.log('y is required');
+            return //console.log('y is required');
         }
         //error
         if(y==='e'){
-            return console.log('an error occurred');
+            return //console.log('an error occurred');
         }
         //query
         if(y==='q'){
@@ -134,7 +134,7 @@ class DhtSpider{
                     this.onAnnouncePeer(msg, rinfo);
                     break;
                 default:
-                    console.log('q is unknown');
+                    //console.log('q is unknown');
                     qValid=false;
             }
             if(qValid){
@@ -237,7 +237,7 @@ class DhtSpider{
             infoHash = msg.a.info_hash;
             requestData.getPeers++;
             //console.log('get peers',infoHash.toString('hex'));
-            this.torrentController.queueInsert(rinfo,infoHash.toString('hex'),msg.a.id);
+            this.torrentController.queueInsert(rinfo,infoHash,msg.a.id);
             db.saveInfoHash(infoHash.toString('hex'));
         } else {
             return ;

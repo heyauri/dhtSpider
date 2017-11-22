@@ -22,7 +22,7 @@ const config={
     maxNodeNumber:10000,
     maxRequestLength:10000,
     intervalTime:60000,
-    downloadMaxTime:10000,
+    downloadMaxTime:60000,
     bootstrapNodes:[{
         address: 'router.utorrent.com',
         port: 6881
