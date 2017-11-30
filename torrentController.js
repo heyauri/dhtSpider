@@ -26,25 +26,38 @@ class TorrentController {
         this.dispatch();
     }
 
+    /**Insert the target to matadata fetch queue
+     * @param rinfo
+     * @param infoHash
+     * @param peerId
+     */
+
     queueInsert(rinfo, infoHash, peerId) {
-        this.requestQueue.push({
-            rinfo: rinfo,
-            infoHash: infoHash,
-            peerId: peerId,
-            infoHashStr: infoHash.toString('hex')
-        });
+        if(db.getInfoHashQueryTimes(infoHash)===0){
+            this.requestQueue.push({
+                rinfo: rinfo,
+                infoHash: infoHash,
+                peerId: peerId,
+                infoHashStr: infoHash.toString('hex')
+            });
+        }
+        else{
+            db.updateInfohash(infoHash);
+        }
     }
 
     dispatch() {
         let _this = this;
         setInterval(function () {
-            console.log("Metadata fetch times:" + processData.fetchNumber);
             while (_this.currentQueue.length < config.maxRequestLength && _this.requestQueue.length > 0) {
                 let target = _this.requestQueue.shift();
                 _this.currentQueue.push(target);
                 _this.fetch(target);
             }
         }, 5000);
+        setInterval(function () {
+            console.log("Metadata fetch times:" + processData.fetchNumber);
+        }, 60000);
     }
 
     fetch(target) {
@@ -62,8 +75,12 @@ class TorrentController {
 
             wire.on('metadata', function (metadata, infoHash) {
                 successful = true;
-                this.saveMetadata(infoHash.toString("hex"), metadata, rinfo);
-                this.saveTorrent(infoHash.toString("hex"), metadata, rinfo);
+                this.saveMetadata(infoHash.toString("hex"), metadata, rinfo).then(function(msg){
+                    console.log("metadata save successfully");
+                    if(msg==="success"){
+                        db.insertInfohash(infoHash.toString("hex"));
+                    }
+                });
                 socket.destroy();
             }.bind(this));
 
@@ -101,7 +118,7 @@ class TorrentController {
 
     saveMetadata(infoHash, metadata, rinfo) {
         let data=this.metadataWrapper(infoHash,metadata,rinfo);
-        db.insertMetadata(infoHash,data);
+        return db.insertMetadata(infoHash,data);
     }
 
     metadataWrapper(infoHash,metadata,rinfo){
@@ -111,7 +128,7 @@ class TorrentController {
         }
         return {
             infoHash:infoHash,
-            name:metadata.info.name,
+            name:metadata.info.name.toString(),
             info:metadata.info,
             torrentType:torrentType,
             rinfo:rinfo
