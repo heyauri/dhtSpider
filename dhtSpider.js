@@ -2,7 +2,7 @@
 const dgram=require('dgram');
 const crypto=require('crypto');
 const bencode=require('bencode');
-//util
+//utils
 const utils=require('./lib/utils');
 //config
 const config=require('./config');
@@ -238,7 +238,6 @@ class DhtSpider{
             requestData.getPeers++;
             //console.log('get peers',infoHash.toString('hex'));
             this.torrentController.queueInsert(rinfo,infoHash,msg.a.id);
-            db.saveInfoHash(infoHash.toString('hex'));
         } else {
             return ;
         }
@@ -256,7 +255,6 @@ class DhtSpider{
             let infoHash=msg.a.info_hash;
             requestData.announcePeers++;
             //console.log('announce peer',infoHash.toString('hex'));
-            db.saveInfoHash(infoHash.toString('hex'));
         } else {
             return ;
         }

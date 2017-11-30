@@ -1,6 +1,6 @@
 /**configuration of the spider
  * databaseType:
- * 1.sqlite  2.mongoDB
+ * 1.sqlite  2.mongoDB 3.levelDB(default and recommended)
  *
  *
  */
@@ -9,8 +9,7 @@
 const config={
     address:"0.0.0.0",
     port:6881,
-    databaseType:'sqlite',
-    //databaseType:'mongoDB',
+    databaseType:'levelDB',
     sqliteConfig:{
         //sqliteType:'multi',
         sqliteType:'single',
