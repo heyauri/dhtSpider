@@ -39,6 +39,11 @@ class DhtSpider{
             this.init();
         });
 
+        this.udp.on('error', (err) => {
+            console.log(`server error:\n${err.stack}`);
+        });
+
+
         if(this.address){
             this.udp.bind(this.port,this.address)
         }
@@ -150,8 +155,8 @@ class DhtSpider{
                 return ;
             }
 
-            const len = nodes.length;
-            if (len !== 0) {
+            let len = nodes.length;
+            if (len&&len !== 0) {
                 for (let i = 0; i < len; i++) {
                     //将node加入路由表
                     let node = nodes[i];
@@ -222,12 +227,15 @@ class DhtSpider{
     }
 
     onFindNode(msg,rinfo){
-        let r={
-            id:this.id,
-            nodes:this.nodeList[Math.floor(this.nodeList.length/2)]
-        };
-        requestData.findNode++;
-        this.response(r,msg.t,rinfo);
+        let target=msg.a['target'];
+        if(this.nodeList.length){
+            let r={
+                id:this.id,
+                nodes:this.kTable.findClosestNodes(target)
+            };
+            requestData.findNode++;
+            this.response(r,msg.t,rinfo);
+        }
     }
 
 
@@ -236,7 +244,6 @@ class DhtSpider{
         if (msg.a && msg.a.info_hash && msg.a.info_hash.length === 20) {
             infoHash = msg.a.info_hash;
             requestData.getPeers++;
-            //console.log('get peers',infoHash.toString('hex'));
             this.torrentController.queueInsert(rinfo,infoHash,msg.a.id);
         } else {
             return ;

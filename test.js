@@ -4,12 +4,7 @@ const utils=require("./lib/utils");
 
 let db=new Leveldb();
 
-//db.readAllMetadata();
+db.readAllMetadata();
 db.readAllInfohash();
-
-db.db_metadata.get("84d29d33290b8b8e76a270ae784132c1e3804d83",function(err,value){
-    if(err) return console.log(err);
-    let obj=JSON.parse(value);
-    console.log(obj);
-    console.log(utils.bufferRecover(obj).info.files[0].path.toString());
-});
+console.log(db.getInfoHashQueryTimes("1442244"));
+console.log(db.getInfoHashQueryTimes("3298f1800aeebd0081ec4d190e4704346225a220"));

@@ -9,7 +9,8 @@ const Leveldb=require("./lib/database/levelOperate");
 const config = require('./config');
 
 let processData = {
-    fetchNumber: 0
+    fetchNumber: 0,
+    successNumber:0
 };
 
 let db=new Leveldb();
@@ -33,17 +34,20 @@ class TorrentController {
      */
 
     queueInsert(rinfo, infoHash, peerId) {
-        if(db.getInfoHashQueryTimes(infoHash)===0){
-            this.requestQueue.push({
-                rinfo: rinfo,
-                infoHash: infoHash,
-                peerId: peerId,
-                infoHashStr: infoHash.toString('hex')
-            });
-        }
-        else{
-            db.updateInfohash(infoHash);
-        }
+        let _this=this;
+        let infoHashStr=infoHash.toString("hex");
+        db.getInfoHashQueryTimes(infoHashStr).then(function(val){
+            db.updateInfohash(infoHashStr);
+        },function(err){
+            if(err===0||!err){
+                _this.requestQueue.push({
+                    rinfo: rinfo,
+                    infoHash: infoHash,
+                    peerId: peerId,
+                    infoHashStr: infoHashStr
+                });
+            }
+        });
     }
 
     dispatch() {
@@ -57,11 +61,13 @@ class TorrentController {
         }, 5000);
         setInterval(function () {
             console.log("Metadata fetch times:" + processData.fetchNumber);
+            console.log("Metadata fetch successfully times:" + processData.successNumber);
         }, 60000);
     }
 
     fetch(target) {
         processData.fetchNumber++;
+        //console.log("metadata fetching...");
         let successful = false;
         let socket = new net.Socket();
 
@@ -77,8 +83,9 @@ class TorrentController {
                 successful = true;
                 this.saveMetadata(infoHash.toString("hex"), metadata, rinfo).then(function(msg){
                     console.log("metadata save successfully");
+                    processData.successNumber++;
                     if(msg==="success"){
-                        db.insertInfohash(infoHash.toString("hex"));
+                        db.updateInfohash(infoHash.toString("hex"));
                     }
                 });
                 socket.destroy();

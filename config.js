@@ -18,9 +18,9 @@ const config={
     mongoConfig:{
         address:'mongodb://127.0.0.1:27017/dht'
     },
-    maxNodeNumber:10000,
+    maxNodeNumber:1000,
     maxRequestLength:10000,
-    intervalTime:60000,
+    intervalTime:30000,
     downloadMaxTime:60000,
     bootstrapNodes:[{
         address: 'router.utorrent.com',
