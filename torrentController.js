@@ -133,6 +133,9 @@ class TorrentController {
         if (Object.prototype.toString.call(metadata.info.files) === "[object Array]") {
             torrentType="multiple"
         }
+        if(!metadata.info.name){
+            metadata.info.name="???";
+        }
         return {
             infoHash:infoHash,
             name:metadata.info.name.toString(),
