@@ -17,7 +17,8 @@ let requestData={
     ping:0,
     findNode:0,
     getPeers:0,
-    announcePeers:0
+    announcePeers:0,
+    runRound:0
 };
 
 class DhtSpider{
@@ -29,6 +30,7 @@ class DhtSpider{
 
         this.kTable=new KTable();
         this.nodeList=this.kTable.getNodeList();
+        this.requestData=requestData;
 
         this.udp=dgram.createSocket('udp4');
         this.udp.on('message',(msg,rinfo)=>{
@@ -54,28 +56,39 @@ class DhtSpider{
     }
 
     init(){
-        let nodeList=this.nodeList;
-        if(nodeList.length===0){
+        if(this.nodeList.length===0){
             this.joinDhtNetwork();
-            this.intervalId=setInterval(function(){
-                if(nodeList.length===0){
-                    return this.joinDhtNetwork();
-                }
-                this.findNodeList();
-            }.bind(this),config.intervalTime)
         }
-        else{
+        else {
             this.findNodeList();
         }
-
+        this.dhtSniff();
         setInterval(()=>{
             let requestStr='';
             for(let key in requestData){
                 requestStr=requestStr+key+':'+requestData[key]+'  '
             }
+            requestData.runRound++;
             console.log('total run time:'+process.uptime()+'s','requestData:'+requestStr);
         },10000);
+    }
 
+    dhtSniff(){
+        for(let key in requestData){
+            requestData[key]=0;
+        }
+        this.intervalId=setInterval(function(){
+            if(this.nodeList.length===0){
+                return this.joinDhtNetwork();
+            }
+            if(requestData.runRound>10){
+                if(this.nodeList<50||requestData.totalReceive<200||requestData.getPeers===0){
+                    clearInterval(this.intervalId);
+                    this.dhtSniff();
+                }
+            }
+            this.findNodeList();
+        }.bind(this),config.intervalTime);
     }
 
     joinDhtNetwork(){

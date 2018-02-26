@@ -1,18 +1,18 @@
 {
   "name": "dhtSpider",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "author": "ruiyeah",
   "license": "MIT",
   "description": "dht spider",
   "dependencies": {
     "bencode": "^0.12.0",
     "bitfield": "^1.1.2",
-    "crypto": "0.0.3",
+    "crypto": "^0.0.3",
     "dgram": "^1.0.1",
     "events": "^1.1.1",
-    "level": "^2.0.1",
-    "linvodb3": "^3.25.1",
-    "mongoose": "^4.10.4",
+    "level": "^3.0.0",
+    "minimist": "^1.2.0",
+    "mongoose": "^4.13.11",
     "net": "^1.0.2",
     "sqlite3": "^3.1.8"
   },
