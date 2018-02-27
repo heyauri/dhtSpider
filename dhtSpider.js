@@ -77,6 +77,7 @@ class DhtSpider{
         for(let key in requestData){
             requestData[key]=0;
         }
+        this.joinDhtNetwork();
         this.intervalId=setInterval(function(){
             if(this.nodeList.length===0){
                 return this.joinDhtNetwork();

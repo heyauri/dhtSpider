@@ -5,6 +5,7 @@ const path = require('path');
 const bencode = require('bencode');
 
 const Wire = require('./lib/wire');
+const utils=require('./lib/utils');
 const Leveldb=require("./lib/database/levelOperate");
 const config = require('./config');
 
@@ -24,7 +25,6 @@ class TorrentController {
             console.log("Creating torrents directory.");
             fs.mkdirSync(__dirname + '/torrents/');
         }
-        this.dispatch();
     }
 
     /**Insert the target to matadata fetch queue
@@ -39,7 +39,7 @@ class TorrentController {
         db.getInfoHashQueryTimes(infoHashStr).then(function(val){
             db.updateInfohash(infoHashStr);
         },function(err){
-            if(err===0||!err){
+            if(err==="NotFoundError"||!err){
                 _this.requestQueue.push({
                     rinfo: rinfo,
                     infoHash: infoHash,
@@ -152,6 +152,20 @@ class TorrentController {
                 return console.error(err);
             }
             console.log(infoHash + ".torrent has saved.");
+        });
+    }
+
+    exportTorrent(infoHash){
+        db.getMetadata(infoHash).then(function(val){
+            let metadata=JSON.parse(val);
+            metadata.info=utils.bufferRecover(metadata.info);
+            let torrentFilePathSaveTo = path.join(__dirname, "torrents", infoHash + ".torrent");
+            fs.writeFile(torrentFilePathSaveTo, bencode.encode({'info': metadata.info}), function (err) {
+                if (err) {
+                    return console.error(err);
+                }
+                console.log(infoHash + ".torrent has saved.");
+            });
         });
     }
 }
