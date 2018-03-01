@@ -37,9 +37,11 @@ class TorrentController {
         let _this=this;
         let infoHashStr=infoHash.toString("hex");
         db.getInfoHashQueryTimes(infoHashStr).then(function(val){
+            //repeated torrents
             db.updateInfohash(infoHashStr);
         },function(err){
             if(err==="NotFoundError"||!err){
+                //new torrnets
                 _this.requestQueue.push({
                     rinfo: rinfo,
                     infoHash: infoHash,
@@ -78,16 +80,9 @@ class TorrentController {
         socket.connect(rinfo.port, rinfo.address, function () {
             let wire = new Wire(infoHash);
             socket.pipe(wire).pipe(socket);
-
             wire.on('metadata', function (metadata, infoHash) {
                 successful = true;
-                this.saveMetadata(infoHash.toString("hex"), metadata, rinfo).then(function(msg){
-                    console.log("metadata save successfully");
-                    processData.successNumber++;
-                    if(msg==="success"){
-                        db.updateInfohash(infoHash.toString("hex"));
-                    }
-                });
+                this.saveMetadata(infoHash.toString("hex"), metadata, rinfo);
                 socket.destroy();
             }.bind(this));
 
@@ -125,24 +120,50 @@ class TorrentController {
 
     saveMetadata(infoHash, metadata, rinfo) {
         let data=this.metadataWrapper(infoHash,metadata,rinfo);
-        return db.insertMetadata(infoHash,data);
+        console.log(data,metadata.info.name);
+        if(data){
+            db.insertMetadata(infoHash,data).then(function(msg){
+                console.log("metadata save successfully");
+                processData.successNumber++;
+                if(msg==="success"){
+                    db.updateInfohash(infoHash.toString("hex"));
+                }
+            });
+        }
     }
 
     metadataWrapper(infoHash,metadata,rinfo){
         let torrentType = "single";
+        let filePaths='';
         if (Object.prototype.toString.call(metadata.info.files) === "[object Array]") {
-            torrentType="multiple"
+            torrentType="multiple";
+            let arr=[];
+            for(let item of metadata.info.files){
+                if(item['path']){
+                    arr.push(filePaths+item['path'].toString());
+                }
+            }
+            filePaths=arr.join(",");
         }
-        if(!metadata.info.name){
-            metadata.info.name="???";
+        else if(metadata.info.files){
+            if(metadata.info.files['path']){
+                filePaths=metadata.info.files['path'].toString();
+            }
         }
-        return {
-            infoHash:infoHash,
-            name:metadata.info.name.toString(),
-            info:metadata.info,
-            torrentType:torrentType,
-            rinfo:rinfo
-        };
+        if(!metadata.info.name.toString()){
+            console.log(metadata.info.name.toString());
+            return false
+        }
+        else{
+            return {
+                infoHash:infoHash,
+                name:metadata.info.name.toString(),
+                info:metadata.info,
+                torrentType:torrentType,
+                rinfo:rinfo,
+                filePaths:filePaths
+            };
+        }
     }
 
     saveTorrent(infoHash, metadata, rinfo) {

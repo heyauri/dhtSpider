@@ -31,6 +31,7 @@ const config={
     }, {
         address: 'dht.transmissionbt.com',
         port: 6881
-    }]
+    }],
+    languageForbidden:['']
 };
 module.exports=config;
