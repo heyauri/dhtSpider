@@ -1,16 +1,16 @@
 
 const Leveldb=require("./lib/database/levelOperate");
-const torrentController=require("./torrentController");
+const torrentController=require("./lib/torrentController");
 const utils=require("./lib/utils");
 
 let db=new Leveldb();
 
-db.readAllMetadata();
-//db.readAllInfohash();
+//db.readAllMetadata();
+db.readAllInfohash();
 /*console.log(db.getInfoHashQueryTimes("1442244"));
 console.log(db.getInfoHashQueryTimes("3298f1800aeebd0081ec4d190e4704346225a220"));*/
 db.getMetadata("ffb937bfed1087d7d04a4a6200f615d1d6b10d80").then(function(val){
-    //console.log(val);
+    //console.log(JSON.parse(val));
 /*    let metadata=JSON.parse(val);
     metadata.info=utils.bufferRecover(metadata.info);
     console.log(metadata.info);
@@ -37,3 +37,7 @@ db.getMetadata("ffb937bfed1087d7d04a4a6200f615d1d6b10d80").then(function(val){
 /*
 let tr=new torrentController();
 tr.exportTorrent("fe2b41a96cc9cb5e5372a65fe490c45d53efd015");*/
+/*
+
+const moment=require('moment');
+console.log(moment().format('YYYY/MM/DD hh:mm:ss'));*/

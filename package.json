@@ -1,6 +1,6 @@
 {
   "name": "dhtSpider",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "author": "ruiyeah",
   "license": "MIT",
   "description": "dht spider",
@@ -12,9 +12,8 @@
     "events": "^1.1.1",
     "level": "^3.0.0",
     "minimist": "^1.2.0",
-    "mongoose": "^4.13.11",
-    "net": "^1.0.2",
-    "sqlite3": "^3.1.8"
+    "moment": "^2.22.1",
+    "net": "^1.0.2"
   },
   "scripts": {}
 }

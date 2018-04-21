@@ -1,7 +1,7 @@
 
 
-const DhtSpider=require('./dhtSpider');
-const TorrentController=require('./torrentController');
+const DhtSpider=require('./lib/dhtSpider');
+const TorrentController=require('./lib/torrentController');
 const config=require('./config');
 
 
