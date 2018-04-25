@@ -1,17 +1,19 @@
 
-const Leveldb=require("./lib/database/levelOperate");
-const torrentController=require("./lib/torrentController");
-const utils=require("./lib/utils");
+//const Leveldb=require("./lib/database/levelOperate");
+/*const torrentController=require("./lib/torrentController");
+const utils=require("./lib/utils");*/
+const config=require("./config");
+const indexOperation=require("./lib/indexOperation");
 
-let db=new Leveldb();
+//let db=new Leveldb();
 
 //db.readAllMetadata();
-db.readAllInfohash();
+//db.readAllInfohash();
 /*console.log(db.getInfoHashQueryTimes("1442244"));
 console.log(db.getInfoHashQueryTimes("3298f1800aeebd0081ec4d190e4704346225a220"));*/
-db.getMetadata("ffb937bfed1087d7d04a4a6200f615d1d6b10d80").then(function(val){
+/*db.getMetadata("ffb937bfed1087d7d04a4a6200f615d1d6b10d80").then(function(val){
     //console.log(JSON.parse(val));
-/*    let metadata=JSON.parse(val);
+/!*    let metadata=JSON.parse(val);
     metadata.info=utils.bufferRecover(metadata.info);
     console.log(metadata.info);
     console.log(metadata.info.name.toString());
@@ -31,8 +33,8 @@ db.getMetadata("ffb937bfed1087d7d04a4a6200f615d1d6b10d80").then(function(val){
         }
     }
 
-    console.log(filePaths);*/
-});
+    console.log(filePaths);*!/
+});*/
 
 /*
 let tr=new torrentController();
@@ -41,3 +43,10 @@ tr.exportTorrent("fe2b41a96cc9cb5e5372a65fe490c45d53efd015");*/
 
 const moment=require('moment');
 console.log(moment().format('YYYY/MM/DD hh:mm:ss'));*/
+
+indexOperation.indexCount([config.databaseAddress.index,config.databaseAddress.target]).then((values)=>{
+   console.log(values);
+});
+
+
+//indexOperation.indexConstruction({source:config.databaseAddress.target,index:config.databaseAddress.index});

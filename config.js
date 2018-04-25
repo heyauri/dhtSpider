@@ -11,8 +11,8 @@ const config={
     port:6881,
     databaseType:'levelDB',
     databaseAddress:{
-        metadata:"/data/metadata",
-        infohash:"data/index"
+        target:process.cwd()+"/data/metadata",
+        index:process.cwd()+"/data/index"
     },
     maxNodeNumber:20,
     maxRequestLength:10000,
@@ -28,7 +28,6 @@ const config={
         address: 'dht.transmissionbt.com',
         port: 6881
     }],
-
     languageForbidden:['']
 };
 module.exports=config;
