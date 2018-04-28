@@ -44,9 +44,15 @@ tr.exportTorrent("fe2b41a96cc9cb5e5372a65fe490c45d53efd015");*/
 const moment=require('moment');
 console.log(moment().format('YYYY/MM/DD hh:mm:ss'));*/
 
-indexOperation.indexCount([config.databaseAddress.index,config.databaseAddress.target]).then((values)=>{
+/*indexOperation.indexCount().then((values)=>{
    console.log(values);
+});*/
+let indexConstruction=indexOperation.indexConstruction();
+indexConstruction.on("constructFinish",function(){
+   console.log("event:construct finish");
 });
 
 
 //indexOperation.indexConstruction({source:config.databaseAddress.target,index:config.databaseAddress.index});
+
+//indexOperation.indexSearch("日本");

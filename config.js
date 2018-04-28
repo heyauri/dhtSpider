@@ -14,7 +14,7 @@ const config={
         target:process.cwd()+"/data/metadata",
         index:process.cwd()+"/data/index"
     },
-    maxNodeNumber:20,
+    maxNodeNumber:200,
     maxRequestLength:10000,
     intervalTime:30000,
     downloadMaxTime:160000,
