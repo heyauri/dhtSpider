@@ -15,13 +15,15 @@ let spider=new DhtSpider(config.address,config.port,torrentController);
 
 let scanIndex=function(){
     spider.stopInterval();
+    torrentController.stop();
     setTimeout(()=>{
         let indexConstruct=indexOperation.indexConstruction();
         indexConstruct.on("constructFinish",function(){
             spider.init();
+            torrentController.dispatch();
             setTimeout(()=>{scanIndex()},3600000);
         })
     },config.downloadMaxTime+1000);
 };
 
-setTimeout(()=>{scanIndex()},3600000);
+setTimeout(()=>{scanIndex()},6000);

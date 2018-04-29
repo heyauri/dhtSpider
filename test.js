@@ -47,12 +47,12 @@ console.log(moment().format('YYYY/MM/DD hh:mm:ss'));*/
 /*indexOperation.indexCount().then((values)=>{
    console.log(values);
 });*/
-let indexConstruction=indexOperation.indexConstruction();
+/*let indexConstruction=indexOperation.indexConstruction();
 indexConstruction.on("constructFinish",function(){
    console.log("event:construct finish");
-});
+});*/
 
 
 //indexOperation.indexConstruction({source:config.databaseAddress.target,index:config.databaseAddress.index});
 
-//indexOperation.indexSearch("日本");
+indexOperation.indexSearch("电影 1978 1080p hjfdbksjd bsfdkb aadad 666");
