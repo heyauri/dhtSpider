@@ -1,48 +1,86 @@
 
-//const Leveldb=require("./lib/database/levelOperate");
-/*const torrentController=require("./lib/torrentController");
-const utils=require("./lib/utils");*/
+const Leveldb=require("./lib/database/levelOperate");
+const torrentController=require("./lib/dhtSpider/torrentController");
+const utils=require("./lib/dhtSpider/utils");
+
+const bencode=require("bencode");
+const fs=require("fs");
+const path=require("path");
 const config=require("./config");
+const lzString=require("lz-string");
 const indexOperation=require("./lib/indexOperation");
 
-//let db=new Leveldb();
+let db=new Leveldb();
+let db_index=db.getDB().db_index;
+let db_target=db.getDB().db_target;
+let count=0;
+db_index.createReadStream().on('data', function (data) {
+    console.log(data);
+    if(data.key.indexOf("001_")<0&&data.key.indexOf("002_")<0&&data.key.indexOf("003_")<0){
+        try{
+            let obj=JSON.parse(data.value);
+            let c=lzString.decompressFromUTF16(obj.c);
+            console.log(c);
+        }catch (e) {
 
-//db.readAllMetadata();
-//db.readAllInfohash();
-/*console.log(db.getInfoHashQueryTimes("1442244"));
-console.log(db.getInfoHashQueryTimes("3298f1800aeebd0081ec4d190e4704346225a220"));*/
-/*db.getMetadata("ffb937bfed1087d7d04a4a6200f615d1d6b10d80").then(function(val){
-    //console.log(JSON.parse(val));
-/!*    let metadata=JSON.parse(val);
-    metadata.info=utils.bufferRecover(metadata.info);
-    console.log(metadata.info);
-    console.log(metadata.info.name.toString());
-    let filePaths='';
-    if (Object.prototype.toString.call(metadata.info.files) === "[object Array]") {
-        let arr=[];
-        for(let item of metadata.info.files){
-            if(item['path']){
-                arr.push(filePaths+item['path'].toString());
-            }
-        }
-        filePaths=arr.join(",");
-    }
-    else if(metadata.info.files){
-        if(metadata.info.files['path']){
-            filePaths=metadata.info.files['path'].toString();
         }
     }
+}).on('end', function () {
+    console.log('Stream ended');
+    console.log(count);
+});
 
-    console.log(filePaths);*!/
-});*/
+
+//require('leveldown').repair('./data/metadata', function (err) { console.log('done!') })
 
 /*
 let tr=new torrentController();
-tr.exportTorrent("fe2b41a96cc9cb5e5372a65fe490c45d53efd015");*/
-/*
+let infoHash="98d1f7af3cc796f2d5581fe075e7f949e55d1f1c";*/
 
-const moment=require('moment');
-console.log(moment().format('YYYY/MM/DD hh:mm:ss'));*/
+/*db.getMetadata(infoHash).then((val)=>{
+    let metadata=utils.bufferRecover(JSON.parse(val));
+    tr.saveMetadata("123",metadata);
+});*/
+
+
+
+/*
+db.db_metadata.get("123").then((val)=>{
+    console.log("infohash:"+val);
+});*/
+/*
+db.db_metadata.get(infoHash).then((val)=>{
+    //console.log(val);
+    let str=lzString.compressToUTF16(val);
+    console.log(val===lzString.decompressFromUTF16(str));
+    console.log(str.length/val.length);
+    console.log(Object.prototype.toString.call(str));
+    db.db_metadata.put("123456",str).then(()=>{
+        db.db_metadata.get("123456").then((val)=>{
+            console.log(val.length);
+            let count=0;
+            for(let i=0;i<str.length;i++){
+                if(str[i]===val[i]) {
+                    count++;
+                }else {
+                    break;
+                }
+            }
+            console.log(count);
+            console.log(str===val);
+        });
+    })
+});
+
+*/
+
+
+//db.readAllInfohash();
+//db.readAllMetadata();
+/**/
+
+/*
+tr.exportTorrent("fe2b41a96cc9cb5e5372a65fe490c45d53efd015");*/
 
 /*indexOperation.indexCount().then((values)=>{
    console.log(values);
@@ -55,4 +93,5 @@ indexConstruction.on("constructFinish",function(){
 
 //indexOperation.indexConstruction({source:config.databaseAddress.target,index:config.databaseAddress.index});
 
-indexOperation.indexSearch("电影 1978 1080p hjfdbksjd bsfdkb aadad 666");
+//indexOperation.indexSearch("三块广告牌");
+
