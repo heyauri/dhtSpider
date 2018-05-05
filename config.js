@@ -12,7 +12,8 @@ const config={
     databaseType:'levelDB',
     databaseAddress:{
         target:process.cwd()+"/data/metadata",
-        index:process.cwd()+"/data/index"
+        index:process.cwd()+"/data/index",
+        backup:process.cwd()+"/data/index_backup"
     },
     maxNodeNumber:200,
     maxRequestLength:10000,

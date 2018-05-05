@@ -11,6 +11,7 @@
     "dgram": "^1.0.1",
     "events": "^1.1.1",
     "koa": "^2.5.1",
+    "koa-bodyparser": "^4.2.0",
     "koa-router": "^7.4.0",
     "koa-static": "^4.0.2",
     "langjudge": "^0.2.0",
@@ -20,7 +21,8 @@
     "moment": "^2.22.1",
     "natural": "^0.5.6",
     "net": "^1.0.2",
-    "segmentit": "^1.1.4"
+    "segmentit": "^1.1.4",
+    "through": "^2.3.8"
   },
   "scripts": {}
 }

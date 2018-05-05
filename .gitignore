@@ -1,4 +1,5 @@
 /node_modules/
+/backup/
 /database/sqliteInfohash/
 /database/index.db
 /database/infohash.db
@@ -8,3 +9,5 @@
 test.js
 data.zip
 data01.zip
+data02.zip
+nginx.conf
