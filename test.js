@@ -77,8 +77,17 @@ indexConstruction.on("constructFinish",function(){
 //indexOperation.indexConstruction({source:config.databaseAddress.target,index:config.databaseAddress.index});
 
 //indexOperation.indexSearch("电影");
+/*
 
 indexOperation.indexBackup().on('backupFinish',function(){
     console.log('backupFinish');
 });
+*/
+
+const redis = require("redis");
+
+let client = redis.createClient();
+
+
+client.set("string key", "string val", redis.print);
 

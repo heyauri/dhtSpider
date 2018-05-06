@@ -12,7 +12,7 @@ const Static = require('koa-static');
 const BodyParser = require('koa-bodyparser');
 let btSearch=require("./lib/server/btSearch");
 //torrent controllerInit
-let torrentController=new TorrentController();
+/*let torrentController=new TorrentController();
 torrentController.dispatch();
 //dht spider
 let spider=new DhtSpider(config.address,config.port,torrentController);
@@ -29,13 +29,14 @@ let scanIndex=function(){
 
 let indexBackup=function(){
     indexOperation.indexBackup().on('backupFinish',function(){
+        console.log("backupFinish");
         spider.init();
         torrentController.dispatch();
         setTimeout(()=>{scanIndex()},3600000);
     })
 };
 
-setTimeout(()=>{scanIndex()},0);
+setTimeout(()=>{scanIndex()},0);*/
 
 
 const staticPath = './static';
@@ -72,5 +73,5 @@ router.get('/btSearch', async (ctx) => {
 app.use(router.routes()).use(router.allowedMethods());
 
 
-app.listen(6666);
-console.log('[demo] start-quick is starting at port 6666');
+app.listen(12345);
+console.log('[demo] start-quick is starting at port 12345');
