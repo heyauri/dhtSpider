@@ -12,7 +12,8 @@ const indexOperation=require("./lib/indexOperation");
 let db=new Leveldb();
 /*
 let db_index=db.getDB().db_index;
-let db_target=db.getDB().db_target;
+db_index.get('ac154793a0c72b9bceaadf259019a1001806ff31').then(value => console.log(value));*/
+/*let db_target=db.getDB().db_target;
 let count=0;
 db_index.createReadStream().on('data', function (data) {
     console.log(data);
@@ -68,10 +69,10 @@ tr.exportTorrent("fe2b41a96cc9cb5e5372a65fe490c45d53efd015");*/
 /*indexOperation.indexCount().then((values)=>{
    console.log(values);
 });*/
-/*let indexConstruction=indexOperation.indexConstruction();
+let indexConstruction=indexOperation.indexConstruction();
 indexConstruction.on("constructFinish",function(){
    console.log("event:construct finish");
-});*/
+});
 
 
 //indexOperation.indexConstruction({source:config.databaseAddress.target,index:config.databaseAddress.index});
@@ -83,11 +84,3 @@ indexOperation.indexBackup().on('backupFinish',function(){
     console.log('backupFinish');
 });
 */
-
-const redis = require("redis");
-
-let client = redis.createClient();
-
-
-client.set("string key", "string val", redis.print);
-

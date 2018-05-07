@@ -57,7 +57,7 @@ router.get('/btSearch', async (ctx) => {
         else {
             obj = JSON.parse(ctx.query);
         }
-        await btSearch(obj.target).then((result)=>{
+        await btSearch(obj).then((result)=>{
             ctx.body=JSON.stringify(result);
         }).catch((err)=>{
             ctx.status = 500;
