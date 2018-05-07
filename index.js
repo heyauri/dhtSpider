@@ -12,7 +12,7 @@ const Static = require('koa-static');
 const BodyParser = require('koa-bodyparser');
 let btSearch=require("./lib/server/btSearch");
 //torrent controllerInit
-/*let torrentController=new TorrentController();
+let torrentController=new TorrentController();
 torrentController.dispatch();
 //dht spider
 let spider=new DhtSpider(config.address,config.port,torrentController);
@@ -36,10 +36,11 @@ let indexBackup=function(){
     })
 };
 
-setTimeout(()=>{scanIndex()},0);*/
+setTimeout(()=>{scanIndex()},3600000);
 
 
-const staticPath = './static';
+const staticPath = '../dhtClient/dist';
+//const staticPath = './static';
 app.use(Static(
     path.join(__dirname, staticPath)
 ));
