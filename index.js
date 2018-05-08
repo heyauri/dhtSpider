@@ -22,25 +22,31 @@ let scanIndex=function(){
     setTimeout(()=>{
         let indexConstruct=indexOperation.indexConstruction();
         indexConstruct.on("constructFinish",function(){
+            indexConstruct.removeListener("constructFinish",(text)=>{
+                console.log(text);
+            });
             indexBackup();
         })
     },config.downloadMaxTime+1000);
 };
 
 let indexBackup=function(){
-    indexOperation.indexBackup().on('backupFinish',function(){
+    let backup=indexOperation.indexBackup().on('backupFinish',function(){
         console.log("backupFinish");
+        backup.removeListener("backupFinish",(text)=>{
+            console.log(text);
+        });
         spider.init();
         torrentController.dispatch();
         setTimeout(()=>{scanIndex()},3600000);
     })
 };
 
-setTimeout(()=>{scanIndex()},3600000);
+setTimeout(()=>{scanIndex()},0);
 
 
-const staticPath = '../dhtClient/dist';
-//const staticPath = './static';
+//const staticPath = '../dhtClient/dist';
+const staticPath = './static';
 app.use(Static(
     path.join(__dirname, staticPath)
 ));
