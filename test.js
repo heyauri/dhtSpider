@@ -77,10 +77,8 @@ indexConstruction.on("constructFinish",function(){
 
 //indexOperation.indexConstruction({source:config.databaseAddress.target,index:config.databaseAddress.index});
 
-indexOperation.indexSearch("复仇者联盟");
-/*
+//indexOperation.indexSearch("复仇者联盟");
 
 indexOperation.indexBackup().on('backupFinish',function(){
     console.log('backupFinish');
 });
-*/
