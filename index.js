@@ -11,8 +11,9 @@ const path = require("path");
 const Static = require('koa-static');
 const BodyParser = require('koa-bodyparser');
 let btSearch=require("./lib/server/btSearch");
+let getInfo=require("./lib/server/getInfo");
 //torrent controllerInit
-/*let torrentController=new TorrentController();
+let torrentController=new TorrentController();
 torrentController.dispatch();
 //dht spider
 let spider=new DhtSpider(config.address,config.port,torrentController);
@@ -27,7 +28,7 @@ let scanIndex=function(){
             });
             indexBackup();
         })
-    },config.downloadMaxTime+1000);
+    },config.downloadMaxTime+6000);
 };
 
 let indexBackup=function(){
@@ -42,11 +43,11 @@ let indexBackup=function(){
     })
 };
 
-setTimeout(()=>{scanIndex()},0);*/
+setTimeout(()=>{scanIndex()},0);
 
 
-const staticPath = '../dhtClient/dist';
-//const staticPath = './static';
+//const staticPath = '../dhtClient/dist';
+const staticPath = './static';
 app.use(Static(
     path.join(__dirname, staticPath)
 ));
@@ -65,6 +66,20 @@ router.get('/btSearch', async (ctx) => {
             obj = JSON.parse(ctx.query);
         }
         await btSearch(obj).then((result)=>{
+            ctx.body=JSON.stringify(result);
+        }).catch((err)=>{
+            ctx.status = 500;
+            ctx.body = err;
+        })
+    }catch(err){
+        ctx.status = 500;
+        ctx.body = 'Oh my 404!';
+    }
+});
+
+router.get('/getInfo', async (ctx) => {
+    try{
+        await getInfo().then((result)=>{
             ctx.body=JSON.stringify(result);
         }).catch((err)=>{
             ctx.status = 500;

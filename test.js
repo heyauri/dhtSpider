@@ -32,16 +32,6 @@ db_index.createReadStream().on('data', function (data) {
 });*/
 
 
-//require('leveldown').repair('./data/metadata', function (err) { console.log('done!') })
-
-/*
-let tr=new torrentController();
-let infoHash="98d1f7af3cc796f2d5581fe075e7f949e55d1f1c";*/
-
-/*db.getMetadata(infoHash).then((val)=>{
-    let metadata=utils.bufferRecover(JSON.parse(val));
-    tr.saveMetadata("123",metadata);
-});*/
 
 
 
@@ -61,24 +51,43 @@ db.db_metadata.get("1c96886648b41f9a1236f0b87dd532df1e69d767").then((val)=>{
 
 
 //db.readAllInfohash();
+//db.indexToLog();
 //db.readAllMetadata();
-/**/
-
 /*
-tr.exportTorrent("fe2b41a96cc9cb5e5372a65fe490c45d53efd015");*/
-/*indexOperation.indexCount().then((values)=>{
+indexOperation.indexCount().then((values)=>{
    console.log(values);
 });*/
-/*let indexConstruction=indexOperation.indexConstruction();
+/*
+let count=0;
+let delCount=0;
+
+let stream = db.getDB().db_index.createReadStream()
+    .on('data', function (data) {
+        if(data.value.indexOf("indexed") <0 && (data.key.indexOf('001_') < 0 && data.key.indexOf('002_') < 0 && data.key.indexOf('003_') < 0)){
+            count++;
+            if(count<20)console.log(data);
+        }
+    })
+    .on('error', function (err) {
+        console.log('Oh my!', err)
+    })
+    .on('close', function () {
+        console.log('Stream closed')
+    })
+    .on('end', function () {
+        console.log('Stream ended');
+        setTimeout(()=>{
+            console.log(count,delCount)
+        },1000)
+    });*/
+let indexConstruction=indexOperation.indexConstruction();
 indexConstruction.on("constructFinish",function(){
-   console.log("event:construct finish");
-});*/
+    console.log("event:construct finish");
+});
 
-
-//indexOperation.indexConstruction({source:config.databaseAddress.target,index:config.databaseAddress.index});
-
-//indexOperation.indexSearch("复仇者联盟");
-
+/*
 indexOperation.indexBackup().on('backupFinish',function(){
     console.log('backupFinish');
-});
+});*/
+
+//indexOperation.loadBackup();
