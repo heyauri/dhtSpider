@@ -1,0 +1,17 @@
+/node_modules/
+/backup/
+/database/sqliteInfohash/
+/database/index.db
+/database/infohash.db
+/.idea/
+/torrents/
+/data/
+test.js
+index-test.js
+data.zip
+data01.zip
+data02.zip
+/log/
+/static/
+nginx.conf
+indexLog.log
