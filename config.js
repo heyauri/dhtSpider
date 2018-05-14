@@ -16,7 +16,7 @@ const config={
         backup:process.cwd()+"/data/index_backup"
     },
     maxNodeNumber:200,
-    maxRequestLength:10000,
+    maxRequestLength:800,
     intervalTime:30000,
     downloadMaxTime:160000,
     bootstrapNodes:[{

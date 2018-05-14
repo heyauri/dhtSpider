@@ -16,32 +16,42 @@ let getInfo=require("./lib/server/getInfo");
 let torrentController=new TorrentController();
 torrentController.dispatch();
 
-let count=0;
+let count=0,status=true;
 //dht spider
 let spider=new DhtSpider(config.address,config.port,torrentController);
 let restart=function () {
-    spider.init();
-    torrentController.dispatch();
-    setTimeout(()=>{scanIndex()},3600000);
+    if(!status){
+        status=true;
+        spider.init();
+        torrentController.dispatch();
+        setTimeout(()=>{scanIndex()},3600000);
+    }
 };
 let scanIndex=function(){
-    spider.stopInterval();
-    torrentController.stop();
-    setTimeout(()=>{
-        let indexConstruct=indexOperation.indexConstruction();
-        indexConstruct.on("constructFinish",function(){
-            indexConstruct.removeListener("constructFinish",(text)=>{
-                console.log(text);
+    if(status){
+        status=false;
+        spider.stopInterval();
+        torrentController.stop();
+        setTimeout(()=>{
+            let indexConstruct=indexOperation.indexConstruction();
+            indexConstruct.on("constructFinish",function(){
+                indexConstruct.removeListener("constructFinish",(text)=>{
+                    console.log(text);
+                });
+                if(count===0){
+                    count++;
+                    indexBackup();
+                }else if(count===12){
+                    count=0;
+                    indexBackup();
+                }
+                else{
+                    count++;
+                    restart();
+                }
             });
-            if(count<12){
-                count++;
-                restart();
-            }else{
-                count=0;
-                indexBackup();
-            }
-        });
-    },config.downloadMaxTime+6000);
+        },config.downloadMaxTime+6000);
+    }
 };
 
 let indexBackup=function(){
@@ -56,8 +66,11 @@ let indexBackup=function(){
 
 setTimeout(()=>{scanIndex()},0);
 
+setInterval(()=>{
+    console.log(process.memoryUsage());
+},30000);
 
-//const staticPath = '../dhtClient/dist';
+
 const staticPath = './static';
 app.use(Static(
     path.join(__dirname, staticPath)
