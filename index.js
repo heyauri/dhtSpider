@@ -27,6 +27,15 @@ let restart=function () {
         setTimeout(()=>{scanIndex()},3600000);
     }
 };
+
+let valueFilter=function () {
+    indexOperation.valueFilter.fullIndexScan().then((val)=>{
+        console.log('full scan number',val);
+        indexOperation.valueFilter.nameFilter().then(()=>{
+            restart();
+        })
+    })
+};
 let scanIndex=function(){
     if(status){
         status=false;
@@ -47,7 +56,7 @@ let scanIndex=function(){
                 }
                 else{
                     count++;
-                    restart();
+                    valueFilter();
                 }
             });
         },config.downloadMaxTime+6000);
@@ -60,7 +69,7 @@ let indexBackup=function(){
         backup.removeListener("backupFinish",(text)=>{
             console.log(text);
         });
-        restart();
+        valueFilter();
     })
 };
 
