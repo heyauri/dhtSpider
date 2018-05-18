@@ -99,7 +99,7 @@ Well, I think generally a infohash is enough for this.
 
 ## Else
 
-#### Demo address: [www.bthub.info](http://www.bithub.info)
+#### Demo address: [www.bthub.info](http://www.bthub.info)
 
 
 Cheers.
