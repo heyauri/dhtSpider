@@ -24,14 +24,14 @@ let restart=function () {
         status=true;
         spider.init();
         torrentController.dispatch();
-        setTimeout(()=>{scanIndex()},3600000);
+        setTimeout(()=>{scanIndex()},1800000);
     }
 };
 
 let valueFilter=function () {
     indexOperation.valueFilter.fullIndexScan().then((val)=>{
         console.log('full scan number',val);
-        indexOperation.valueFilter.nameFilter().then(()=>{
+        indexOperation.valueFilter.valueFilter().then(()=>{
             restart();
         })
     })
@@ -43,7 +43,7 @@ let scanIndex=function(){
         torrentController.stop();
         setTimeout(()=>{
             let indexConstruct=indexOperation.indexConstruction();
-            indexConstruct.on("constructFinish",function(){
+            indexConstruct.once("constructFinish",function(){
                 indexConstruct.removeListener("constructFinish",(text)=>{
                     console.log(text);
                 });
@@ -56,7 +56,7 @@ let scanIndex=function(){
                 }
                 else{
                     count++;
-                    valueFilter();
+                    restart();
                 }
             });
         },config.downloadMaxTime+6000);
@@ -64,7 +64,7 @@ let scanIndex=function(){
 };
 
 let indexBackup=function(){
-    let backup=indexOperation.indexBackup().on('backupFinish',function(){
+    let backup=indexOperation.indexBackup().once('backupFinish',function(){
         console.log("backupFinish");
         backup.removeListener("backupFinish",(text)=>{
             console.log(text);
