@@ -69,7 +69,8 @@ let indexBackup=function(){
         backup.removeListener("backupFinish",(text)=>{
             console.log(text);
         });
-        valueFilter();
+        //valueFilter();
+        restart();
     })
 };
 
