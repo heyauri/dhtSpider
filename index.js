@@ -22,7 +22,7 @@ let spider=new DhtSpider(config.address,config.port,torrentController);
 let restart=function () {
     if(!status){
         status=true;
-        spider.init();
+        spider.startListening();
         torrentController.dispatch();
         setTimeout(()=>{scanIndex()},1800000);
     }
@@ -59,7 +59,7 @@ let scanIndex=function(){
                     restart();
                 }
             });
-        },config.downloadMaxTime+6000);
+        },config.downloadMaxTime+9000);
     }
 };
 
