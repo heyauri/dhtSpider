@@ -11,14 +11,13 @@ const config={
     port:6881,
     databaseType:'levelDB',
     databaseAddress:{
-        target:process.cwd()+"/data/metadata",
         index:process.cwd()+"/data/index",
         backup:process.cwd()+"/data/index_backup"
     },
-    maxNodeNumber:200,
+    maxNodeNumber:400,
     maxRequestLength:800,
     intervalTime:30000,
-    downloadMaxTime:160000,
+    downloadMaxTime:0,
     bootstrapNodes:[{
         address: 'router.utorrent.com',
         port: 6881

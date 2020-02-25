@@ -1,8 +1,7 @@
-
-const DhtSpider=require('./lib/dhtSpider/dhtSpider');
-const TorrentController=require('./lib/dhtSpider/torrentController');
-const indexOperation=require('./lib/indexOperation');
-const config=require('./config');
+const DhtSpider = require('./lib/dhtSpider/dhtSpider');
+const TorrentController = require('./lib/dhtSpider/torrentController');
+const indexOperation = require('./lib/indexOperation');
+const config = require('./config');
 
 const Koa = require('koa');
 const app = new Koa();
@@ -10,63 +9,52 @@ const Router = require("koa-router");
 const path = require("path");
 const Static = require('koa-static');
 const BodyParser = require('koa-bodyparser');
-let btSearch=require("./lib/server/btSearch");
-let getInfo=require("./lib/server/getInfo");
+let btSearch = require("./lib/server/btSearch");
+let getInfo = require("./lib/server/getInfo");
 //torrent controllerInit
-let torrentController=new TorrentController();
+let torrentController = new TorrentController();
 torrentController.dispatch();
 
-let count=0,status=true;
+let count = 0, status = true;
 //dht spider
-let spider=new DhtSpider(config.address,config.port,torrentController);
-let restart=function () {
-    if(!status){
-        status=true;
+let spider = new DhtSpider(config.address, config.port, torrentController);
+let restart = function () {
+    if (!status) {
+        status = true;
         spider.startListening();
         torrentController.dispatch();
-        setTimeout(()=>{scanIndex()},1800000);
+        setTimeout(() => {
+            scanIndex()
+        }, 1800000);
     }
 };
 
-let valueFilter=function () {
-    indexOperation.valueFilter.fullIndexScan().then((val)=>{
-        console.log('full scan number',val);
-        indexOperation.valueFilter.valueFilter().then(()=>{
-            restart();
-        })
-    })
-};
-let scanIndex=function(){
-    if(status){
-        status=false;
+let scanIndex = function () {
+    if (status) {
+        status = false;
         spider.stopInterval();
         torrentController.stop();
-        setTimeout(()=>{
-            let indexConstruct=indexOperation.indexConstruction();
-            indexConstruct.once("constructFinish",function(){
-                indexConstruct.removeListener("constructFinish",(text)=>{
-                    console.log(text);
-                });
-                if(count===0){
-                    count++;
-                    indexBackup();
-                }else if(count===12){
-                    count=0;
-                    indexBackup();
-                }
-                else{
-                    count++;
-                    restart();
-                }
-            });
-        },config.downloadMaxTime+9000);
+        setTimeout(() => {
+            if (count === 0) {
+                count++;
+                indexBackup();
+            } else if (count === 12) {
+                count = 0;
+                indexBackup();
+            }
+            else {
+                count++;
+                restart();
+            }
+
+        }, config.downloadMaxTime + 9000);
     }
 };
 
-let indexBackup=function(){
-    let backup=indexOperation.indexBackup().once('backupFinish',function(){
+let indexBackup = function () {
+    let backup = indexOperation.indexBackup().once('backupFinish', function () {
         console.log("backupFinish");
-        backup.removeListener("backupFinish",(text)=>{
+        backup.removeListener("backupFinish", (text) => {
             console.log(text);
         });
         //valueFilter();
@@ -74,11 +62,13 @@ let indexBackup=function(){
     })
 };
 
-setTimeout(()=>{scanIndex()},0);
+setTimeout(() => {
+    scanIndex()
+}, 0);
 
-setInterval(()=>{
+setInterval(() => {
     console.log(process.memoryUsage());
-},30000);
+}, 60000);
 
 
 const staticPath = './static';
@@ -91,35 +81,35 @@ app.use(BodyParser());
 // 装载所有子路由
 let router = new Router();
 router.get('/btSearch', async (ctx) => {
-    try{
-        let obj={};
-        if(Object.prototype.toString.call(ctx.query)==="[object Object]"){
-            obj=ctx.query;
+    try {
+        let obj = {};
+        if (Object.prototype.toString.call(ctx.query) === "[object Object]") {
+            obj = ctx.query;
         }
         else {
             obj = JSON.parse(ctx.query);
         }
-        await btSearch(obj).then((result)=>{
-            ctx.body=JSON.stringify(result);
-        }).catch((err)=>{
+        await btSearch(obj).then((result) => {
+            ctx.body = JSON.stringify(result);
+        }).catch((err) => {
             ctx.status = 500;
             ctx.body = err;
         })
-    }catch(err){
+    } catch (err) {
         ctx.status = 500;
         ctx.body = 'Oh my 404!';
     }
 });
 
 router.get('/getInfo', async (ctx) => {
-    try{
-        await getInfo().then((result)=>{
-            ctx.body=JSON.stringify(result);
-        }).catch((err)=>{
+    try {
+        await getInfo().then((result) => {
+            ctx.body = JSON.stringify(result);
+        }).catch((err) => {
             ctx.status = 500;
             ctx.body = err;
         })
-    }catch(err){
+    } catch (err) {
         ctx.status = 500;
         ctx.body = 'Oh my 404!';
     }

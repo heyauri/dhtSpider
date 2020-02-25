@@ -1,6 +1,6 @@
 {
   "name": "dhtSpider",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "author": "ruiyeah",
   "license": "MIT",
   "description": "dht spider",
@@ -15,17 +15,17 @@
     "koa-router": "^7.4.0",
     "koa-static": "^4.0.2",
     "langjudge": "^0.2.0",
-    "level": "^3.0.0",
+    "level-min": "^0.2.2",
     "level-ws": "^0.1.0",
     "lz-string": "^1.4.4",
     "minimist": "^1.2.0",
     "moment": "^2.22.1",
-    "natural": "^0.5.6",
     "net": "^1.0.2",
     "redis": "^2.8.0",
-    "segmentit": "^1.1.4",
     "split": "^1.0.1",
     "through": "^2.3.8"
   },
-  "scripts": {}
+  "scripts": {
+    "start": "node index.js"
+  }
 }
